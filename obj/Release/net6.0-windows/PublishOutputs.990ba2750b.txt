@@ -1,0 +1,13 @@
+C:\Users\msmit\Projects\Kats\Publish\Kats.exe
+C:\Users\msmit\Projects\Kats\Publish\Kats.dll
+C:\Users\msmit\Projects\Kats\Publish\Kats.deps.json
+C:\Users\msmit\Projects\Kats\Publish\Kats.runtimeconfig.json
+C:\Users\msmit\Projects\Kats\Publish\Kats.pdb
+C:\Users\msmit\Projects\Kats\Publish\System.IO.Ports.dll
+C:\Users\msmit\Projects\Kats\Publish\runtimes\linux-arm\native\libSystem.IO.Ports.Native.so
+C:\Users\msmit\Projects\Kats\Publish\runtimes\linux-arm64\native\libSystem.IO.Ports.Native.so
+C:\Users\msmit\Projects\Kats\Publish\runtimes\linux-x64\native\libSystem.IO.Ports.Native.so
+C:\Users\msmit\Projects\Kats\Publish\runtimes\osx-arm64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\msmit\Projects\Kats\Publish\runtimes\osx-x64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\msmit\Projects\Kats\Publish\runtimes\unix\lib\net6.0\System.IO.Ports.dll
+C:\Users\msmit\Projects\Kats\Publish\runtimes\win\lib\net6.0\System.IO.Ports.dll
