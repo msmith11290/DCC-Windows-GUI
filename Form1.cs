@@ -46,9 +46,9 @@ namespace Kats
             SelectComPort comPort = new SelectComPort();
             comPort.ShowDialog();
             //MessageBox.Show("Returned from commPort.Show() in function ClearSplashScreen");   // With the commPort window still active so, it displays the window then relinquishes control
-            Command command = new();
-            command.Show();
-            //MessageBox.Show("Returned from command.Show() in function ClearSplashScreen");
+            CommandWindow commandWindow = new();
+            commandWindow.Show();
+            //MessageBox.Show("Returned from commandWindow.Show() in function ClearSplashScreen");
         }
         /**********************************************************************
          * main() : C# expects this special syntax
@@ -56,14 +56,14 @@ namespace Kats
         static void Main( string[] arg)
         {
             Application.Run(new Form1()); // This brings up the splash screen.
-            MessageBox.Show("Executed Run(new Form1()");
+            MessageBox.Show("In Form1.Main() post Splash screen");
             SelectComPort.Close_Comm_port();
-            Command command = new();
-            command.Show();
-            MessageBox.Show("Ran command.Show()");
+            CommandWindow commandWindow = new();
+            commandWindow.Show();
+            MessageBox.Show("Ran commandWindow.Show()");
             while (true)
               if (SelectComPort.globalVars.ValueChanged)
-                Command.Send_DCC_Command();
+                CommandWindow.Send_DCC_Command();
         }
     }
 }

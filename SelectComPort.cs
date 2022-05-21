@@ -27,6 +27,7 @@ namespace Kats
         };
         public static GlobalVars globalVars = new();
         public static SerialPort _serialPort;
+        public static string RxBuff; //commented this out to get rid of warning
         /*********************************************************************************
          * SelectComPort : Constructor
         *********************************************************************************/
@@ -48,7 +49,7 @@ namespace Kats
             if (File.Exists(filePath))
             {
                 StreamReader cfgFile = new StreamReader(filePath);
-                globalVars.ComPort = cfgFile.ReadLine();  //Write the  Comm Port 
+                globalVars.ComPort = cfgFile.ReadLine();  // Get the Comm Port and save it
                 //numericUpDown = int32.Parse(cfgFile.ReadLine());//Write the Locomotive number
                 numericUpDown.Value = Convert.ToInt32(cfgFile.ReadLine());//Write the Locomotive number
                 globalVars.LocoAddr = (byte)numericUpDown.Value;
@@ -85,25 +86,31 @@ namespace Kats
                 }
             }
         }
-        /*********************************************************************************\
-         *                      OpenCommPort
-         * Once a port is selected check if it is was previously opened by another process. 
-         * If it is close it then re-open it.. If it was not previously open then open it now.
-         * When a port is open aatach a C# Event Handler function to receive data
-.         ********************************************************************************/
-            private void OpenCommPort()
-            {
-
-                // Create the serial port with basic settings
-                _serialPort = new SerialPort(globalVars.ComPort, 115200, Parity.None, 8, StopBits.One);
-                if (_serialPort.IsOpen)     // Check to see if it's already open
-                {
-                    _serialPort.Close();    // If it is, close it
-                }
-                _serialPort.Open();     // Otherwise, just open it
-                //MessageBox.Show(String.Format("{0} is open now", globalVars.ComPort));
-                // Attach a method to be called when there is data waiting in the port's buffer
-                _serialPort.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
+/*********************************************************************************\
+*                                 OpenCommPort
+* Once a port is selected check if it is was previously opened by another process. 
+* If it is close it then re-open it.. If it was not previously open then open it now.
+* When a port is open aatach a C# Event Handler function to receive data
+********************************************************************************/
+    private void OpenCommPort()
+    {
+        int status;
+        // Create the serial port with basic settings
+        _serialPort = new SerialPort(globalVars.ComPort, 115200, Parity.None, 8, StopBits.One);
+        if(_serialPort.IsOpen)     // Check to see if it's already open
+            _serialPort.Close();    // If it is, close it
+        try
+        {
+            _serialPort.Open();     // Otherwise, just open it
+        }
+        catch
+        {
+            MessageBox.Show("The STM32 Comm Port is not available, reset the STM32 ??");
+        }
+        
+            //MessageBox.Show(String.Format("{0} is open now", globalVars.ComPort));
+            // Attach a method to be called when there is data waiting in the port's buffer
+            _serialPort.DataReceived += new SerialDataReceivedEventHandler(Port_DataReceived);
     }
     /********************************************************************************
      * C# Event Handler function to receive data we attached in the OpenCommPort() 
@@ -112,16 +119,17 @@ namespace Kats
      *******************************************************************************/
     private static void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            int i = 0;
-            //string inBuff; commented this out to get rid of warning
+            //int i = 0;
             // Show all the incoming data in the port's buffer
-            //inBuff = string.Format(_serialPort.ReadExisting());
-
-            do
-            {
-                recvMsg[i] = (byte)_serialPort.ReadByte();
-            }
-            while (recvMsg[i++] != -1);
+            RxBuff = string.Format(_serialPort.ReadExisting());
+            /* the above lines seem to work making the following lines redundant
+                        do
+                        {
+                            recvMsg[i] = (byte)_serialPort.ReadByte();
+                        }
+                        while (recvMsg[i++] != -1);
+            */
+            CommandWindow.Wait4response = true;
         }
         /*****************************************************************************************
         Get a list of available serial port names. Later we can change the code to lisy only 
@@ -259,21 +267,48 @@ namespace Kats
         {
             string mymsg;
             int i;
+            int delay;
             //mymsg = locoAddrTextBox.Text;
             //Int32.TryParse(mymsg, out i);
             if (globalVars.ComPort != null)
             {
-                Command.AssemblePollPkt();
+                CommandWindow.AssemblePollPkt();
                 SaveConfigData();
+                delay = 0;
+                while ((CommandWindow.Wait4response == false) && (delay < 100) ) // Delay for up to 1 Second
+                {
+                    Thread.Sleep(10);       // Sleep for 10 mSec
+                    delay++;                // Keep track of number of 10 mSec delays         
+                }
+                if(delay > 100)               // Then we timed out
+                   MessageBox.Show(String.Format("Communication with the KATS (DCC) station timed out"));
+                else
+                {
+                    if (CommandWindow.Wait4response)
+                    {
+                        if (RxBuff[0] == CommandWindow.POLL_ACKNOWLEDGE)
+                        {
+                            MessageBox.Show(String.Format("Successful handshake with KATS (DCC) station\n\n KATS is now in remote mode (PC Controlled)"));
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(String.Format("KATS (DCC) station did not respond to handshake"));
+                    }
+                }
             }
             else
             {
-                MessageBox.Show(String.Format("You must choose a Comm Port to communicate to the KATS(DCC) station"));
+                MessageBox.Show(String.Format("You must choose a Comm Port to communicate to the KATS (DCC) station"));
                 return;
             }
-                //this.Close();    // Close the SelectComPort winForm for debugging puposes. Removefor real life
+            this.Close();    // Close the SelectComPort winForm for debugging puposes. Removefor real life
         }
-                private void LocoAddrChanged(object sender, EventArgs e)
+        /******************************************************************************
+         *                      LocoAddrChanged
+         * The address of the Locomotive has been changed by the user
+         *****************************************************************************/
+        private void LocoAddrChanged(object sender, EventArgs e)
         {
             globalVars.LocoAddr = (byte)numericUpDown.Value;
         }

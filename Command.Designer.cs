@@ -1,6 +1,6 @@
 ﻿namespace Kats
 {
-    partial class Command
+    partial class CommandWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.listView1 = new System.Windows.Forms.ListView();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.Direction = new System.Windows.Forms.Button();
             this.trkBarReadout = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -51,7 +51,7 @@
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(262, 312);
+            this.trackBar1.Location = new System.Drawing.Point(249, 311);
             this.trackBar1.Maximum = 28;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(252, 45);
@@ -89,14 +89,15 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "Enter Speed";
             // 
-            // button1
+            // Direction
             // 
-            this.button1.Location = new System.Drawing.Point(118, 73);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.Direction.Location = new System.Drawing.Point(594, 311);
+            this.Direction.Name = "Direction";
+            this.Direction.Size = new System.Drawing.Size(117, 23);
+            this.Direction.TabIndex = 7;
+            this.Direction.Text = "Change Direction";
+            this.Direction.UseVisualStyleBackColor = true;
+            this.Direction.Click += new System.EventHandler(this.DirectionChange);
             // 
             // trkBarReadout
             // 
@@ -107,20 +108,20 @@
             this.trkBarReadout.TabIndex = 8;
             this.trkBarReadout.Text = "0";
             // 
-            // Command
+            // CommandWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.trkBarReadout);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.Direction);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.SpeedTextBox);
-            this.Name = "Command";
+            this.Name = "CommandWindow";
             this.Text = "Command";
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
@@ -136,7 +137,7 @@
         private ProgressBar progressBar1;
         private ListView listView1;
         private Label label1;
-        private Button button1;
+        private Button Direction;
         private Label trkBarReadout;
     }
 }
